@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 import classes from './AuthForm.module.css';
+import AuthContext from '../store/auth-context'; // Import AuthContext as the default export
 
 const AuthForm = () => {
   const emailInputRef = useRef();
@@ -7,6 +8,7 @@ const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const authCtx = useContext(AuthContext);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -56,6 +58,7 @@ const AuthForm = () => {
       })
       .then((data) => {
         console.log(data);
+        authCtx.login(data.idToken);
         // Handle successful login or signup here
       })
       .catch((error) => {
@@ -83,10 +86,10 @@ const AuthForm = () => {
             className={classes.toggle}
             onClick={switchAuthModeHandler}
           >
-            {isLogin ? 'Create new account' : 'Login with existing account'}
+            {isLogin ? 'Create new account' : 'Login with an existing account'}
           </button>
         </div>
-       {/* {errorMessage && <p className={classes.error}>{errorMessage}</p>} */}
+        {errorMessage && <p className={classes.error}>{errorMessage}</p>}
       </form>
     </section>
   );
